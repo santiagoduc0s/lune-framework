@@ -1,8 +1,11 @@
 <?php
 
-require 'Router.php';
+require_once '../vendor/autoload.php';
 
-$router = new Router;
+use Lune\HttpNotFoundException;
+use Lune\Router;
+
+$router = new Router();
 
 $router->get('/', function () {
     print('soy la primera ruta');
@@ -12,7 +15,7 @@ $router->get('/', function () {
 try {
     $action = $router->resolve();
     $action();
-} catch (Exception $e) {
+} catch (HttpNotFoundException $e) {
     print('404 - Not Found');
     http_response_code(404);
 }

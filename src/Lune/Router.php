@@ -1,7 +1,6 @@
 <?php
 
-require './HttpMethods.php';
-require './HttpNotFoundException.php';
+namespace Lune;
 
 class Router
 {
@@ -18,11 +17,13 @@ class Router
     {
         $method = $_SERVER["REQUEST_METHOD"];
         $uri = $_SERVER["REQUEST_URI"];
+        
         $action = $this->routes[$method][$uri] ?? null;
 
         if (is_null($action)) {
             throw new HttpNotFoundException;
         }
+
         return $action;
     }
 
@@ -36,5 +37,14 @@ class Router
         $this->routes[HttpMethods::POST->value][$uri] = $action;
     }
 
+    public function put(string $uri, callable $action)
+    {
+        $this->routes[HttpMethods::PUT->value][$uri] = $action;
+    }
+
+    public function delete(string $uri, callable $action)
+    {
+        $this->routes[HttpMethods::DELETE->value][$uri] = $action;
+    }
         
 }

@@ -1,0 +1,18 @@
+{
+    "name": "santiducos/lune",
+    "description": "Simple php framework",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Lune\\": "src/Lune"
+        }
+    },
+    "authors": [
+        {
+            "name": "Santiago Ducos",
+            "email": "santidu200@gmail.com"
+        }
+    ],
+    "require": {}
+}
