@@ -11,9 +11,13 @@ $router->get('/', function () {
     print('soy la primera ruta');
 });
 
+$router->put('/', function () {
+    print('PUT JE');
+});
+
 
 try {
-    $action = $router->resolve();
+    $action = $router->resolve($_SERVER["REQUEST_METHOD"], $_SERVER["REQUEST_URI"]);
     $action();
 } catch (HttpNotFoundException $e) {
     print('404 - Not Found');
