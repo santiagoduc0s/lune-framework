@@ -2,6 +2,8 @@
 
 namespace Lune;
 
+use Closure;
+
 class Router
 {
     protected array $routes = [];
@@ -13,35 +15,40 @@ class Router
         }
     }
 
-    public function resolve(string $method, string $uri)
+    public function resolve(string $method, string $uri): Route
     {
         $action = $this->routes[$method][$uri] ?? null;
-
-        if (is_null($action)) {
-            throw new HttpNotFoundException;
+        foreach ($this->routes[$method] as $route) {
+            if ($route->matches($uri)) {
+                return $route;
+            }
         }
 
-        return $action;
+        throw new HttpNotFoundException;
     }
 
-    public function get(string $uri, callable $action)
+    protected function registerRoute(HttpMethods $method, string $uri, Closure $action)
     {
-        $this->routes[HttpMethods::GET->value][$uri] = $action;
+        $this->routes[$method->value][] = new Route($uri, $action);
     }
 
-    public function post(string $uri, callable $action)
+    public function get(string $uri, Closure $action)
     {
-        $this->routes[HttpMethods::POST->value][$uri] = $action;
+        $this->registerRoute(HttpMethods::GET, $uri, $action);
     }
 
-    public function put(string $uri, callable $action)
+    public function post(string $uri, Closure $action)
     {
-        $this->routes[HttpMethods::PUT->value][$uri] = $action;
+        $this->registerRoute(HttpMethods::POST, $uri, $action);
     }
 
-    public function delete(string $uri, callable $action)
+    public function put(string $uri, Closure $action)
     {
-        $this->routes[HttpMethods::DELETE->value][$uri] = $action;
+        $this->registerRoute(HttpMethods::PUT, $uri, $action);
     }
-        
+
+    public function delete(string $uri, Closure $action)
+    {
+        $this->registerRoute(HttpMethods::DELETE, $uri, $action);
+    }
 }
