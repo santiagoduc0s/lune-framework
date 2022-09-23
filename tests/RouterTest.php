@@ -3,6 +3,7 @@
 namespace Lune\Tests;
 
 use Lune\HttpMethods;
+use Lune\Route;
 use Lune\Router;
 use PHPUnit\Framework\TestCase;
 
@@ -15,10 +16,12 @@ class RouterTest extends TestCase
         $router = new Router();
         $router->get($uri, $action);
 
-        $this->assertEquals($action, $router->resolve(
+        $route = $router->resolve(
             method: HttpMethods::GET->value,
             uri: $uri
-        ));
+        );
+
+        $this->assertEquals($action, $route->action());
     }
 
     public function test_resolve_multiple_basic_route_with_callback_action()
@@ -37,10 +40,11 @@ class RouterTest extends TestCase
         }
 
         foreach ($routes as $uri => $action) {
-            $this->assertEquals($action, $router->resolve(
+            $route = $router->resolve(
                 method: HttpMethods::GET->value,
                 uri: $uri
-            ));
+            );
+            $this->assertEquals($action, $route->action());
         }
     }
 
@@ -65,10 +69,11 @@ class RouterTest extends TestCase
         }
 
         foreach ($routes as [$method, $uri, $action]) {
-            $this->assertEquals($action, $router->resolve(
+            $route = $router->resolve(
                 method: $method->value,
                 uri: $uri
-            ));
+            );
+            $this->assertEquals($action, $route->action());
         }
     }
 }
