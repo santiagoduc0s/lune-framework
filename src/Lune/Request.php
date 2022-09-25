@@ -6,7 +6,7 @@ class Request
 {
     protected $uri;
 
-    protected HttpMethods $method;
+    protected HttpMethod $method;
 
     protected array $data;
 

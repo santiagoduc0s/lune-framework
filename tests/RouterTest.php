@@ -2,7 +2,8 @@
 
 namespace Lune\Tests;
 
-use Lune\HttpMethods;
+use Lune\HttpMethod;
+use Lune\Request;
 use Lune\Route;
 use Lune\Router;
 use PHPUnit\Framework\TestCase;
@@ -16,10 +17,7 @@ class RouterTest extends TestCase
         $router = new Router();
         $router->get($uri, $action);
 
-        $route = $router->resolve(
-            method: HttpMethods::GET->value,
-            uri: $uri
-        );
+        $route = $router->resolve(new Request(new MockServer($uri, HttpMethod::GET)));
 
         $this->assertEquals($action, $route->action());
     }
@@ -40,10 +38,7 @@ class RouterTest extends TestCase
         }
 
         foreach ($routes as $uri => $action) {
-            $route = $router->resolve(
-                method: HttpMethods::GET->value,
-                uri: $uri
-            );
+            $route = $router->resolve(new Request(new MockServer($uri, HttpMethod::GET)));
             $this->assertEquals($action, $route->action());
         }
     }
@@ -51,28 +46,25 @@ class RouterTest extends TestCase
     public function test_resolve_multiple_basic_route_with_callback_action_for_different_http_methods()
     {
         $routes = [
-            [HttpMethods::GET, '/test', fn () => 'GET'],
-            [HttpMethods::POST, '/test', fn () => 'POST'],
-            [HttpMethods::PUT, '/test', fn () => 'PUT'],
-            [HttpMethods::DELETE, '/test', fn () => 'DELETE'],
+            [HttpMethod::GET, '/test', fn () => 'GET'],
+            [HttpMethod::POST, '/test', fn () => 'POST'],
+            [HttpMethod::PUT, '/test', fn () => 'PUT'],
+            [HttpMethod::DELETE, '/test', fn () => 'DELETE'],
         ];
 
         $router = new Router();
 
         foreach ($routes as [$method, $uri, $action]) {
             match ($method) {
-                HttpMethods::GET => $router->get($uri, $action),
-                HttpMethods::POST => $router->post($uri, $action),
-                HttpMethods::PUT => $router->put($uri, $action),
-                HttpMethods::DELETE => $router->delete($uri, $action),
+                HttpMethod::GET => $router->get($uri, $action),
+                HttpMethod::POST => $router->post($uri, $action),
+                HttpMethod::PUT => $router->put($uri, $action),
+                HttpMethod::DELETE => $router->delete($uri, $action),
             };
         }
 
         foreach ($routes as [$method, $uri, $action]) {
-            $route = $router->resolve(
-                method: $method->value,
-                uri: $uri
-            );
+            $route = $router->resolve(new Request(new MockServer($uri, HttpMethod::GET)));
             $this->assertEquals($action, $route->action());
         }
     }

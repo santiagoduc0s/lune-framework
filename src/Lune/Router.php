@@ -10,7 +10,7 @@ class Router
 
     public function __construct()
     {
-        foreach (HttpMethods::cases() as $method) {
+        foreach (HttpMethod::cases() as $method) {
             $this->routes[$method->value] = [];
         }
     }
@@ -26,28 +26,28 @@ class Router
         throw new HttpNotFoundException;
     }
 
-    protected function registerRoute(HttpMethods $method, string $uri, Closure $action)
+    protected function registerRoute(HttpMethod $method, string $uri, Closure $action)
     {
         $this->routes[$method->value][] = new Route($uri, $action);
     }
 
     public function get(string $uri, Closure $action)
     {
-        $this->registerRoute(HttpMethods::GET, $uri, $action);
+        $this->registerRoute(HttpMethod::GET, $uri, $action);
     }
 
     public function post(string $uri, Closure $action)
     {
-        $this->registerRoute(HttpMethods::POST, $uri, $action);
+        $this->registerRoute(HttpMethod::POST, $uri, $action);
     }
 
     public function put(string $uri, Closure $action)
     {
-        $this->registerRoute(HttpMethods::PUT, $uri, $action);
+        $this->registerRoute(HttpMethod::PUT, $uri, $action);
     }
 
     public function delete(string $uri, Closure $action)
     {
-        $this->registerRoute(HttpMethods::DELETE, $uri, $action);
+        $this->registerRoute(HttpMethod::DELETE, $uri, $action);
     }
 }
