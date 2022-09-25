@@ -6,10 +6,19 @@ use Lune\HttpMethod;
 use Lune\Request;
 use Lune\Route;
 use Lune\Router;
+use Lune\Server;
 use PHPUnit\Framework\TestCase;
 
 class RouterTest extends TestCase
 {
+    private function createMockRequest(string $uri, HttpMethod $method): Request
+    {
+        $mockServer = $this->getMockBuilder(Server::class)->getMock();
+        $mockServer->method('requestUri')->willReturn($uri);
+        $mockServer->method('requestMethod')->willReturn($method);
+        return new Request($mockServer);
+    }
+
     public function test_resolve_basic_route_with_callback_action()
     {
         $uri = '/test';
@@ -17,7 +26,7 @@ class RouterTest extends TestCase
         $router = new Router();
         $router->get($uri, $action);
 
-        $route = $router->resolve(new Request(new MockServer($uri, HttpMethod::GET)));
+        $route = $router->resolve($this->createMockRequest($uri, HttpMethod::GET));
 
         $this->assertEquals($action, $route->action());
     }
@@ -38,7 +47,7 @@ class RouterTest extends TestCase
         }
 
         foreach ($routes as $uri => $action) {
-            $route = $router->resolve(new Request(new MockServer($uri, HttpMethod::GET)));
+            $route = $router->resolve($this->createMockRequest($uri, HttpMethod::GET));
             $this->assertEquals($action, $route->action());
         }
     }
@@ -64,7 +73,7 @@ class RouterTest extends TestCase
         }
 
         foreach ($routes as [$method, $uri, $action]) {
-            $route = $router->resolve(new Request(new MockServer($uri, HttpMethod::GET)));
+            $route = $router->resolve($this->createMockRequest($uri, $method));
             $this->assertEquals($action, $route->action());
         }
     }
