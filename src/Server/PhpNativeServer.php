@@ -3,6 +3,7 @@
 namespace Lune\Server;
 
 use Lune\Http\HttpMethod;
+use Lune\Http\Response;
 
 class PhpNativeServer implements Server
 {
@@ -24,5 +25,15 @@ class PhpNativeServer implements Server
     public function queryParams(): array
     {
         return $_GET;
+    }
+
+    public function sendResponse(Response $response)
+    {
+        $response->prepare();
+        http_response_code($response->status());
+        foreach ($response->headers() as $header => $value) {
+            header("$header: $value");
+        }
+        print($response->content());
     }
 }
