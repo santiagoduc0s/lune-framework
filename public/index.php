@@ -31,6 +31,5 @@ try {
     $response = $action($request);
     $server->sendResponse($response);
 } catch (HttpNotFoundException $e) {
-    
     $server->sendResponse(Response::text('Not Found', 404));
 }

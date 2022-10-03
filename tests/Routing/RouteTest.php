@@ -1,14 +1,12 @@
 <?php
 
-namespace Lune\Tests;
+namespace Lune\Tests\Routing;
 
 use Lune\Routing\Route;
 use PHPUnit\Framework\TestCase;
 
-class RouteTest extends TestCase
-{
-    public function routesWithoutParameters()
-    {
+class RouteTest extends TestCase {
+    public function routesWithoutParameters() {
         return [
             ['/'],
             ['/test'],
@@ -21,8 +19,7 @@ class RouteTest extends TestCase
     /**
      * @dataProvider routesWithoutParameters
      */
-    public function test_regex_without_parameters(string $uri)
-    {
+    public function test_regex_without_parameters(string $uri) {
         $route = new Route($uri, fn () => 'test');
         $this->assertTrue($route->matches($uri));
         $this->assertFalse($route->matches("$uri/fail"));
@@ -31,8 +28,7 @@ class RouteTest extends TestCase
         $this->assertFalse($route->matches("/fail"));
     }
 
-    public function routesWithParameters()
-    {
+    public function routesWithParameters() {
         return [
             [
                 '/test/{test}',
@@ -77,8 +73,7 @@ class RouteTest extends TestCase
     /**
      * @dataProvider routesWithParameters
      */
-    public function test_regex_with_parameters(string $definitioUri, string $requestedUri)
-    {
+    public function test_regex_with_parameters(string $definitioUri, string $requestedUri) {
         $route = new Route($definitioUri, fn () => 'test');
         $this->assertTrue($route->matches($requestedUri));
         $this->assertFalse($route->matches("$requestedUri/fail"));
@@ -89,8 +84,7 @@ class RouteTest extends TestCase
     /**
      * @dataProvider routesWithParameters
      */
-    public function test_parse_parameters(string $definitioUri, string $requestedUri, array $expectedParameters)
-    {
+    public function test_parse_parameters(string $definitioUri, string $requestedUri, array $expectedParameters) {
         $route = new Route($definitioUri, fn () => 'test');
         $this->assertTrue($route->hasParameters());
         $this->assertEquals($expectedParameters, $route->parseParameters($requestedUri));

@@ -2,67 +2,69 @@
 
 namespace Lune\Http;
 
-class Response
-{
+class Response {
     protected int $status = 200;
     protected array $headers = [];
     protected string | null $content = null;
 
     // -------------------------------------------------------------
 
-    public function status(): int
-    {
+    public function status(): int {
         return $this->status;
     }
 
-    public function setStatus(int $status): self
-    {
+    public function setStatus(int $status): self {
         $this->status = $status;
         return $this;
     }
 
     // -------------------------------------------------------------
 
-    public function headers(): array
-    {
+    /**
+     * Ger response HTTP headers.
+     *
+     * @return array<string, string>
+     */
+    public function headers(): array {
         return $this->headers;
     }
 
-    public function setHeader(string $header, string | int $value): self
-    {
+    /**
+     * Set HTTP header `$header` to `$value`
+     *
+     * @param  string $header
+     * @param  string $value
+     * @return self
+     */
+    public function setHeader(string $header, string $value): self {
         $this->headers[strtolower($header)] = $value;
         return $this;
     }
 
-    public function removeHeader(string $header): self
-    {
+    public function removeHeader(string $header): self {
         unset($this->headers[strtolower($header)]);
         return $this;
     }
 
     // -------------------------------------------------------------
 
-    public function content(): ?string
-    {
+    public function content(): ?string {
         return $this->content;
     }
 
-    public function setContent(string $content): self
-    {
+    public function setContent(string $content): self {
         $this->content = $content;
         return $this;
     }
 
     // -------------------------------------------------------------
 
-    public function setContentType(string $value): self
-    {
+    public function setContentType(string $value): self {
         $this->setHeader('Content-Type', $value);
         return $this;
     }
 
-    public function prepare(): self
-    {
+    public function prepare(): self {
         if (is_null($this->content)) {
             $this->removeHeader('Content-Type');
             $this->removeHeader('Content-Length');
@@ -74,24 +76,21 @@ class Response
 
     // ----------------------------------------------------------
 
-    public static function json(array $data, int $status = 200): self
-    {
+    public static function json(array $data, int $status = 200): self {
         return (new self())
             ->setStatus($status)
             ->setContentType('application/json')
             ->setContent(json_encode($data));
     }
 
-    public static function text(string $text, int $status = 200): self
-    {
+    public static function text(string $text, int $status = 200): self {
         return (new self())
             ->setStatus($status)
             ->setContentType('text/plain')
             ->setContent($text);
     }
 
-    public static function redirect(string $url): self
-    {
+    public static function redirect(string $url): self {
         return (new self())
             ->setStatus(302)
             ->setHeader('Location', $url);

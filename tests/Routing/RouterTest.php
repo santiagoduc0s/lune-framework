@@ -1,6 +1,6 @@
 <?php
 
-namespace Lune\Tests;
+namespace Lune\Tests\Routing;
 
 use Lune\Http\HttpMethod;
 use Lune\Http\Request;
@@ -8,18 +8,15 @@ use Lune\Routing\Router;
 use Lune\Server\Server;
 use PHPUnit\Framework\TestCase;
 
-class RouterTest extends TestCase
-{
-    private function createMockRequest(string $uri, HttpMethod $method): Request
-    {
+class RouterTest extends TestCase {
+    private function createMockRequest(string $uri, HttpMethod $method): Request {
         $mockServer = $this->getMockBuilder(Server::class)->getMock();
         $mockServer->method('requestUri')->willReturn($uri);
         $mockServer->method('requestMethod')->willReturn($method);
         return new Request($mockServer);
     }
 
-    public function test_resolve_basic_route_with_callback_action()
-    {
+    public function test_resolve_basic_route_with_callback_action() {
         $uri = '/test';
         $action = fn () => 'test';
         $router = new Router();
@@ -30,8 +27,7 @@ class RouterTest extends TestCase
         $this->assertEquals($action, $route->action());
     }
 
-    public function test_resolve_multiple_basic_route_with_callback_action()
-    {
+    public function test_resolve_multiple_basic_route_with_callback_action() {
         $routes = [
             '/test' => fn () => 'test',
             '/foo' => fn () => 'foo',
@@ -51,8 +47,7 @@ class RouterTest extends TestCase
         }
     }
 
-    public function test_resolve_multiple_basic_route_with_callback_action_for_different_http_methods()
-    {
+    public function test_resolve_multiple_basic_route_with_callback_action_for_different_http_methods() {
         $routes = [
             [HttpMethod::GET, '/test', fn () => 'GET'],
             [HttpMethod::POST, '/test', fn () => 'POST'],

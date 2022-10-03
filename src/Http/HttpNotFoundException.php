@@ -4,7 +4,6 @@ namespace Lune\Http;
 
 use Exception;
 
-class HttpNotFoundException extends Exception
-{
+class HttpNotFoundException extends Exception {
     // ...
 }
