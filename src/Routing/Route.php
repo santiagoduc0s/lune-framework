@@ -42,4 +42,8 @@ class Route {
 
         return array_combine($this->parameters, array_slice($arguments, 1));
     }
+
+    public static function get(string $uri, Closure $action): void {
+        
+    }
 }
