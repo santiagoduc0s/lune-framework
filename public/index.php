@@ -10,23 +10,32 @@ use Lune\Server\PhpNativeServer;
 
 $router = new Router();
 
-$router->get('/', function (Request $request) {
+$router->get('/', function (Request $request): Response {
     return Response::json(['message' => 'soy la primera ruta']);
 });
 
-$router->put('/put', function (Request $request) {
-    print('method PUT');
+$router->get('/params/{first}', function (Request $request): Response {
+    return Response::json($request->routeParameters());
 });
 
-$router->get('/redirect', function (Request $request) {
+$router->post('/', function (Request $request): Response {
+    return Response::json([...$request->data(), ...$request->query(),]);
+});
+
+$router->put('/put', function (Request $request): Response {
+    return Response::json(['message' => 'method PUT']);
+});
+
+$router->get('/redirect', function (Request $request): Response {
     return Response::redirect('/');
 });
 
 
 try {
     $server = new PhpNativeServer();
-    $request = new Request($server);
+    $request = $server->getRequest();
     $route = $router->resolve($request);
+    $request->setRoute($route);
     $action = $route->action();
     $response = $action($request);
     $server->sendResponse($response);

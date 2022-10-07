@@ -2,10 +2,17 @@
 
 namespace Lune\Http;
 
-use Lune\Server\Server;
+use Lune\Routing\Route;
 
 class Request {
-    protected $uri;
+    /**
+     * Route mached by URI
+     *
+     * @var Route
+     */
+    protected Route $route;
+
+    protected string $uri;
 
     protected HttpMethod $method;
 
@@ -13,36 +20,58 @@ class Request {
 
     protected array $query;
 
-    public function __construct(Server $server) {
-        $this->uri = $server->requestUri();
-        $this->method = $server->requestMethod();
-        $this->data = $server->postData();
-        $this->query = $server->queryParams();
+    public function setPostData(array $data): self {
+        $this->data = $data;
+        return $this;
     }
+
+    public function setQueryParameters(array $query): self {
+        $this->query = $query;
+        return $this;
+    }
+
+    public function routeParameters(): array {
+        return $this->route->parseParameters($this->uri);
+    }
+
+    /**
+     * Get route mached by URI
+     *
+     * @return  Route
+     */
+    public function route() {
+        return $this->route;
+    }
+
+    public function setRoute(Route $route): self {
+        $this->route = $route;
+        return $this;
+    }
+
 
     public function uri() {
         return $this->uri;
+    }
+
+    public function setUri($uri): self {
+        $this->uri = $uri;
+        return $this;
     }
 
     public function method() {
         return $this->method;
     }
 
-    /**
-     * Get POST data
-     *
-     * @return array
-     */
-    public function data(): array {
+    public function setMethod($method): self {
+        $this->method = $method;
+        return $this;
+    }
+
+    public function data() {
         return $this->data;
     }
 
-    /**
-     * Get query params
-     *
-     * @return array
-     */
-    public function query(): array {
+    public function query() {
         return $this->query;
     }
 }
