@@ -27,10 +27,7 @@ class Kernel {
 
     public function run(): void {
         try {
-            $route = $this->router->resolve($this->request);
-            $this->request->setRoute($route);
-            $action = $route->action();
-            $response = $action($this->request);
+            $response = $this->router->resolve($this->request);
             $this->server->sendResponse($response);
         } catch (HttpNotFoundException $e) {
             $this->server->sendResponse(Response::text('Not Found', 404));

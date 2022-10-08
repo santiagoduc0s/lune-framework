@@ -2,6 +2,7 @@
 
 require_once '../vendor/autoload.php';
 
+use Lune\Http\Middleware;
 use Lune\Http\Request;
 use Lune\Http\Response;
 use Lune\Kernel;
@@ -11,6 +12,18 @@ $kernel = Kernel::bootstrap();
 $kernel->router->get('/', function (Request $request): Response {
     return Response::json(['message' => 'soy la primera ruta']);
 });
+
+class AuthMiddleware implements Middleware {
+    public function handle(Request $request, Closure $next): Response {
+        if ($request->headers('Authorization') != 'test') {
+            return Response::json(['message' => 'Not Authorization'])->setStatus(401);
+        }
+        return $next();
+    }
+}
+
+$kernel->router->get('/middleware', fn (Request $request) => Response::json(['message' => 'middleware']))
+    ->setMiddlewares([AuthMiddleware::class]);
 
 $kernel->router->get('/params/{first}', function (Request $request): Response {
     return Response::json($request->routeParameters());

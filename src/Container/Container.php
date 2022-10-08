@@ -9,7 +9,7 @@ class Container {
         if (!array_key_exists($class, self::$instances)) {
             self::$instances[$class] = new $class();
         }
-        return self::resolve($class);
+        return self::$instances[$class];
     }
 
     public static function resolve(string $class) {

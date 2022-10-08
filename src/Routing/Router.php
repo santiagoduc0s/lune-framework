@@ -6,6 +6,7 @@ use Closure;
 use Lune\Http\HttpMethod;
 use Lune\Http\HttpNotFoundException;
 use Lune\Http\Request;
+use Lune\Http\Response;
 
 class Router {
     /**
@@ -21,7 +22,7 @@ class Router {
         }
     }
 
-    public function resolve(Request $request): Route {
+    public function resolveRoute(Request $request): Route {
         foreach ($this->routes[$request->method()->value] as $route) {
             if ($route->matches($request->uri())) {
                 return $route;
@@ -31,23 +32,36 @@ class Router {
         throw new HttpNotFoundException();
     }
 
-    protected function registerRoute(HttpMethod $method, string $uri, Closure $action) {
-        $this->routes[$method->value][] = new Route($uri, $action);
+    public function resolve(Request $request): Response {
+        $route = $this->resolveRoute($request);
+        $request->setRoute($route);
+        $action = $route->action();
+
+        if ($route->hasMiddleware()) {
+        }
+
+        return $action($request);
     }
 
-    public function get(string $uri, Closure $action) {
-        $this->registerRoute(HttpMethod::GET, $uri, $action);
+    protected function registerRoute(HttpMethod $method, string $uri, Closure $action): Route {
+        $route = new Route($uri, $action);
+        $this->routes[$method->value][] = $route;
+        return $route;
     }
 
-    public function post(string $uri, Closure $action) {
-        $this->registerRoute(HttpMethod::POST, $uri, $action);
+    public function get(string $uri, Closure $action): Route {
+        return $this->registerRoute(HttpMethod::GET, $uri, $action);
     }
 
-    public function put(string $uri, Closure $action) {
-        $this->registerRoute(HttpMethod::PUT, $uri, $action);
+    public function post(string $uri, Closure $action): Route {
+        return $this->registerRoute(HttpMethod::POST, $uri, $action);
     }
 
-    public function delete(string $uri, Closure $action) {
-        $this->registerRoute(HttpMethod::DELETE, $uri, $action);
+    public function put(string $uri, Closure $action): Route {
+        return $this->registerRoute(HttpMethod::PUT, $uri, $action);
+    }
+
+    public function delete(string $uri, Closure $action): Route {
+        return $this->registerRoute(HttpMethod::DELETE, $uri, $action);
     }
 }
