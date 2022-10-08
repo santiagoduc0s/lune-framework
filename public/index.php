@@ -18,7 +18,7 @@ class AuthMiddleware implements Middleware {
         if ($request->headers('Authorization') != 'test') {
             return Response::json(['message' => 'Not Authorization'])->setStatus(401);
         }
-        return $next();
+        return $next($request);
     }
 }
 
