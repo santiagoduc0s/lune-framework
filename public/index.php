@@ -41,4 +41,12 @@ $kernel->router->get('/redirect', function (Request $request): Response {
     return Response::redirect('/');
 });
 
+// $kernel->router->get('/html', function (Request $request): Response {
+//     return Response::text('soy un texto plano');
+// });
+
+$kernel->router->get('/html', function (Request $request): Response {
+    return Response::view('home');
+});
+
 $kernel->run();

@@ -2,6 +2,9 @@
 
 namespace Lune\Http;
 
+use Lune\Container\Container;
+use Lune\Kernel;
+
 class Response {
     protected int $status = 200;
     protected array $headers = [];
@@ -94,5 +97,14 @@ class Response {
         return (new self())
             ->setStatus(302)
             ->setHeader('Location', $url);
+    }
+
+    public static function view(string $viewName): self {
+        $kernel = Container::resolve(Kernel::class);
+        $content = $kernel->viewEngine->render($viewName);
+
+        return (new self())
+            ->setContentType('text/html')
+            ->setContent($content);
     }
 }
