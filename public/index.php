@@ -46,7 +46,7 @@ $kernel->router->get('/redirect', function (Request $request): Response {
 // });
 
 $kernel->router->get('/html', function (Request $request): Response {
-    return Response::view('home');
+    return Response::view('home', ['test' => 'soy un parametro'], 'test');
 });
 
 $kernel->run();

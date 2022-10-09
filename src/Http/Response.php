@@ -99,9 +99,9 @@ class Response {
             ->setHeader('Location', $url);
     }
 
-    public static function view(string $viewName): self {
+    public static function view(string $viewName, array $params = [], string $layoutName = null): self {
         $kernel = Container::resolve(Kernel::class);
-        $content = $kernel->viewEngine->render($viewName);
+        $content = $kernel->viewEngine->render($viewName, $params, $layoutName);
 
         return (new self())
             ->setContentType('text/html')
