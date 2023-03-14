@@ -6,10 +6,11 @@ use Lune\Http\Middleware;
 use Lune\Http\Request;
 use Lune\Http\Response;
 use Lune\Kernel;
+use Lune\Routing\Route;
 
 $kernel = Kernel::bootstrap();
 
-$kernel->router->get('/', function (Request $request): Response {
+Route::get('/', function (Request $request): Response {
     return Response::json(['message' => 'soy la primera ruta']);
 });
 

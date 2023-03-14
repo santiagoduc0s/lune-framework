@@ -24,12 +24,15 @@ class Response {
     // -------------------------------------------------------------
 
     /**
-     * Ger response HTTP headers.
-     *
-     * @return array<string, string>
+     * Get all response headers or get specific header.
+     * @param string|null $key
+     * @return array|string|null
      */
-    public function headers(): array {
-        return $this->headers;
+    public function headers(string $key = null): array | string | null {
+        if (is_null($key)) {
+            return $this->headers;
+        }
+        return $this->headers[strtolower($key)] ?? null;
     }
 
     /**

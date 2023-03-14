@@ -14,12 +14,28 @@ class Request {
 
     protected string $uri;
 
+    /**
+     * HTTP method for this request
+     * @var HttpMethod
+     */
     protected HttpMethod $method;
 
+    /**
+     * Headers from request
+     * @var array<string, string>
+     */
     protected array $headers = [];
 
+    /**
+     * Data from body of request 
+     * @var array
+     */
     protected array $data;
 
+    /**
+     * Data from query params
+     * @var array
+     */
     protected array $query;
 
     public function setPostData(array $data): self {
@@ -36,12 +52,7 @@ class Request {
         return $this->route->parseParameters($this->uri);
     }
 
-    /**
-     * Get route mached by URI
-     *
-     * @return  Route
-     */
-    public function route() {
+    public function route(): Route {
         return $this->route;
     }
 
@@ -51,7 +62,7 @@ class Request {
     }
 
 
-    public function uri() {
+    public function uri(): string {
         return $this->uri;
     }
 
@@ -60,6 +71,10 @@ class Request {
         return $this;
     }
 
+    /**
+     * Get HTTP method for this request
+     * @return HttpMethod
+     */
     public function method() {
         return $this->method;
     }
@@ -77,6 +92,11 @@ class Request {
         return $this->query;
     }
 
+    /**
+     * Return all headers or return a specific header
+     * @param string|null $key
+     * @return array|string|null
+     */
     public function headers(string $key = null): array | string | null {
         if (is_null($key)) {
             return $this->headers;

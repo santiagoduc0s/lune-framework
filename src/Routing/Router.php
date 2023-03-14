@@ -9,11 +9,7 @@ use Lune\Http\Request;
 use Lune\Http\Response;
 
 class Router {
-    /**
-     * HTTP routes.
-     *
-     * @var array<string, Route[]>
-     */
+    /** @var Route[] */
     protected array $routes = [];
 
     public function __construct() {
@@ -22,16 +18,26 @@ class Router {
         }
     }
 
+    /**
+     * Search the Route where matches with the URI
+     * @param Request $request
+     * @throws HttpNotFoundException 
+     * @return Route
+     */
     public function resolveRoute(Request $request): Route {
         foreach ($this->routes[$request->method()->value] as $route) {
             if ($route->matches($request->uri())) {
                 return $route;
             }
         }
-
         throw new HttpNotFoundException();
     }
 
+    /**
+     * Return the action for a request 
+     * @param Request $request
+     * @return Response
+     */
     public function resolve(Request $request): Response {
         $route = $this->resolveRoute($request);
         $request->setRoute($route);
@@ -44,7 +50,10 @@ class Router {
         return $action($request);
     }
 
-    protected function runMiddlewares(Request $request, array $middlewares, Closure $target) {
+    /**
+     * Run all middlewares for a request
+     */
+    protected function runMiddlewares(Request $request, array $middlewares, Closure $target): Response {
         if (count($middlewares) == 0) {
             return $target($request);
         }
