@@ -9,6 +9,7 @@
     }
   },
   "scripts": {
+    "serve": "php -S localhost:8000 -t ./public",
     "tests": "phpunit --color=always --testdox -v tests/",
     "php-cs-fixer": ".\\vendor\\bin\\php-cs-fixer fix --diff"
   },
